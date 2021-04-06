@@ -1,5 +1,8 @@
+#!/usr/bin/python
 import csv
 import logging
+import os
+import sys
 
 
 REQUIRED_COLUMNS = ['open', 'high', 'low', 'close']
@@ -12,21 +15,25 @@ def check_data(data):
         number = float(data)
         return number
     except ValueError:
-        return 0
+        return None
 
 
 def calculate_average(datalist: list):
-    """Summarize all values in given list and return average for values."""
+    """
+    Summarize all values in given list and return average for values.
+    If any data is not number - it is not considered into account.
+    """
     datalist_sum = 0
     counter = 0
     for value in datalist:
         number = check_data(value)
-        datalist_sum += number
-        counter += 1
+        if number:
+            datalist_sum += number
+            counter += 1
     try:
         average = datalist_sum / counter
     except ZeroDivisionError:
-        return 0
+        return None
     return average
 
 
@@ -59,5 +66,33 @@ def read_csv_file(csv_filename, keyword):
             for row in required_rows:
                 datalist.append(row[column])
             average = calculate_average(datalist)
-            answer[column] = round(average, 3)
+            try:
+                answer[column] = round(average, 3)
+            except Exception as e:
+                return None
         return answer
+
+
+def main():
+    if len(sys.argv) != 3:
+        print('Run app correctly - it should contain command, path and keyword.')
+        sys.exit()
+
+    directory = sys.argv[1]
+    keyword = sys.argv[2]
+
+    if not os.path.isdir(directory):
+        print('No such directory or enter in correct format.')
+        sys.exit()
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.lower().endswith('.csv'):
+                os.chdir(root)
+                output_data = read_csv_file(file, keyword)
+                if output_data:
+                    print(output_data)
+
+
+if __name__ == '__main__':
+    main()

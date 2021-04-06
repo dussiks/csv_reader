@@ -29,8 +29,8 @@ def calculate_average(datalist: list):
     """
     datalist_sum = 0
     counter = 0
-    for value in datalist:
-        number = check_data(value)
+    for element in datalist:
+        number = check_data(element)
         if number:
             datalist_sum += number
             counter += 1

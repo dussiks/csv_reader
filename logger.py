@@ -8,10 +8,9 @@ _log_format = f'%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 
 
 def get_file_handler():
-    file_handler = RotatingFileHandler(LOG_FILENAME,
-                                       maxBytes=100000,
-                                       backupCount=5,
-                                       )
+    file_handler = RotatingFileHandler(
+        LOG_FILENAME, maxBytes=100000, backupCount=5,
+    )
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(logging.Formatter(_log_format))
     return file_handler

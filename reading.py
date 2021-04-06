@@ -3,7 +3,7 @@ import logging
 
 
 REQUIRED_COLUMNS = ['open', 'high', 'low', 'close']
-SEARCH_COLUMN = 'Names'
+SEARCH_COLUMN = 'Name'
 
 
 def check_data(data):
@@ -43,13 +43,16 @@ def read_csv_file(csv_filename, keyword):
     """
     with open(csv_filename, 'r') as File:
         reader = csv.DictReader(File)
-        headers = reader.fieldnames
+        try:
+            headers = reader.fieldnames
+        except UnicodeError as error:
+            return
         if SEARCH_COLUMN not in headers:
-            return None
+            return
         required_rows = [line for line in reader if line[SEARCH_COLUMN] == keyword]
         available_columns = [column for column in REQUIRED_COLUMNS if column in headers]
         if not (required_rows and available_columns):
-            return None
+            return
         answer = {}
         for column in available_columns:
             datalist = []
@@ -58,6 +61,3 @@ def read_csv_file(csv_filename, keyword):
             average = calculate_average(datalist)
             answer[column] = round(average, 3)
         return answer
-
-
-print(read_csv_file('casdd.csv', 'AAPL'))

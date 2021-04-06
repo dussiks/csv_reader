@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 def check_data(data):
-    """Checks if given data is a number and return it. If not - return 0."""
+    """Checks if given data is a number and return it. If not - return None."""
     try:
         number = float(data)
         return number
@@ -44,14 +44,14 @@ def calculate_average(datalist: list):
 
 def read_csv_file(csv_filename, keyword):
     """
-    Function for calculating average number in each given at REQUIRED_COLUMNS
-    column in file. For calculation taken only values in rows where keyword
-    presents in SEARCH_COLUMN.
+    Function for calculating average number in each required column in file.
+    For calculation taken only values in rows where keyword presents in
+    pointed column.
     :param csv_filename: file with .csv format required.
-    :param keyword: word for searching in SEARCH_COLUMN. Exact match required.
-    :return: dictionary with keys as names of columns listed in
-    REQUIRED_COLUMNS that are found in csv_filename and with values that are
-    equal to average calculated in function for each key.
+    :param keyword: word for searching in pointed column.Exact match required.
+    :return: dictionary with keys as names of columns listed in required
+    columns and found in .csv file and with values that are equal to average
+    calculated in function for each key.
     """
     with open(csv_filename, 'r') as file:
         reader = csv.DictReader(file)

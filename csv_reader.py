@@ -51,8 +51,8 @@ def read_csv_file(csv_filename, keyword):
     :param csv_filename: file with .csv format required.
     :param keyword: word for searching in pointed column.Exact match required.
     :return: dictionary with keys as names of columns listed in required
-    columns and found in .csv file and with values that are equal to average
-    calculated in function for each key.
+    columns values that are equal to average calculated in function for
+    each key.
     """
     with open(csv_filename, 'r', encoding='utf-8-sig') as file:
         reader = csv.DictReader(file)

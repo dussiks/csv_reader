@@ -6,16 +6,17 @@ import sys
 from logger import get_logger
 
 
-REQUIRED_COLUMNS = ['open', 'high', 'low', 'close']
+REQUIRED_COLUMNS = {'open', 'high', 'low', 'close'}
+ALL_COLUMNS_SET = {'date', 'open', 'high', 'low', 'close', 'volume', 'Name'}
 SEARCH_COLUMN = 'Name'
 
 logger = get_logger(__name__)
 
 
-def check_data(data):
-    """Checks if given data is a number and return it. If not - return None."""
+def check_element(elem):
+    """Checks if given data is a number and return it.If not - return None."""
     try:
-        number = float(data)
+        number = float(elem)
         return number
     except ValueError:
         logger.warning(f'Not number obtained in current column.')
@@ -30,7 +31,7 @@ def calculate_average(datalist: list):
     datalist_sum = 0
     counter = 0
     for element in datalist:
-        number = check_data(element)
+        number = check_element(element)
         if number:
             datalist_sum += number
             counter += 1
@@ -53,24 +54,25 @@ def read_csv_file(csv_filename, keyword):
     columns and found in .csv file and with values that are equal to average
     calculated in function for each key.
     """
-    with open(csv_filename, 'r') as file:
+    with open(csv_filename, 'r', encoding='utf-8-sig') as file:
         reader = csv.DictReader(file)
         try:
             headers = reader.fieldnames
         except UnicodeError as e:
             logger.error(f'During reading {file.name} error occurred: {e}')
             return None
-        if SEARCH_COLUMN not in headers:
-            logger.warning(f'No column "{SEARCH_COLUMN}" in {file.name}')
-            return None
+
+        for column in ALL_COLUMNS_SET:
+            if column not in headers:
+                logger.warning(f'No column "{column}" in {file.name}')
+                return None
         required_rows = [row for row in reader if row[SEARCH_COLUMN] == keyword]
-        available_columns = [column for column in REQUIRED_COLUMNS
-                             if column in headers]
-        if not (required_rows and available_columns):
+        if not required_rows:
             logger.warning(f'No required data found in {file.name}')
             return None
+
         answer = {}
-        for column in available_columns:
+        for column in REQUIRED_COLUMNS:
             datalist = []
             for row in required_rows:
                 datalist.append(row[column])
@@ -91,13 +93,11 @@ def main():
         logger.error('App started with incorrect arguments - not equal 3.')
         print('Run app correctly - should contain command, path and keyword.')
         sys.exit()
-
     directory = sys.argv[1]
     keyword = sys.argv[2]
-
     if not os.path.isdir(directory):
         logger.error(f'Directory {sys.argv[1]} not found.')
-        print('No such directory or enter in correct format.')
+        print('No such directory or incorrect format typed.')
         sys.exit()
 
     for root, dirs, files in os.walk(directory):
@@ -107,7 +107,7 @@ def main():
                 os.chdir(root)
                 output_data = read_csv_file(file, keyword)
                 if output_data:
-                    logger.info(f'Next results found: {output_data}')
+                    logger.info(f'Next results calculated: {output_data}')
                     print(output_data)
 
 

@@ -1,11 +1,11 @@
 # csv reader
 
-Console application for calculation average value in desired columns in *.cvs file located at given directory.
+Console application for calculation average value in desired columns in *.csv file located at given directory.
 
 # App running conditions
 ## Required arguments
 1. Directory as local path or full path - .csv file will be looking for in this directory or in folders inside it.
-2. Keyword - word that will be looking for inside .cvs file in column with name 'Name'. Exact match required.
+2. Keyword - word that will be looking for inside .csv file in column with name 'Name'. Exact match required.
 
 ## Starting app format
 `python csv_reader.py ~/date SPENT`
